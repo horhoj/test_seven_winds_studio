@@ -1,0 +1,57 @@
+.ListConnection {
+  min-height: 30px;
+  display: flex;
+  padding-right: 30px;
+}
+
+.connect {
+  width: 30px;
+  height: 100%;
+  position: relative;
+}
+
+.centerVerticalLine {
+  position: absolute;
+  
+  left: 50%;
+  top: -50%;
+  width: 1px;
+  height: 200%;
+  background-color: #C6C6C6;
+}
+
+.centerVerticalHalfLine {
+  position: absolute;
+  
+  left: 50%;
+  top: -50%;
+  width: 1px;
+  height: 100%;
+  background-color: #C6C6C6;
+}
+
+.centerHorizontalHalfLine {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background-color: #C6C6C6;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  background-color: #C6C6C6;
+}
+
+.iconWrapper {
+  position: relative;
+  z-index: 2;
+  padding-left: 30px;
+  width: 30px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

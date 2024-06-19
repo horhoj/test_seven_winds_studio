@@ -1,0 +1,35 @@
+.HeaderBottom {
+  min-height: 44px;
+  border-bottom: 1px solid #414144;
+  display: flex;
+}
+
+.left {
+  width: 240px;
+  border-right: 1px solid #414144;
+  display: flex;
+  padding: 0 10px 0 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  color: #A1A1AA;
+}
+
+.helper {
+  color: #A1A1AA;
+  font-size: 10px;
+}
+
+.arrowDownButton {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 3px;
+
+  &:hover {
+    background-color: #333;
+  }
+}

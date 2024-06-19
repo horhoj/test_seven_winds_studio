@@ -1,0 +1,32 @@
+.LeftMenu {
+  min-width: 240px;
+}
+
+.list {
+  list-style: none;
+}
+
+.link {
+  &>button {
+    width: 100%;
+    display: flex;
+    cursor: pointer;
+    min-height: 32px;
+    align-items: center;
+    padding: 5px 20px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #fff;
+    border: none;
+    gap: 12px;
+
+    &:hover {
+      background-color: #A1A1AA !important;
+    }
+  }
+}
+
+.linkActive {
+  &>button {
+    background-color: #A1A1AA !important;
+  }
+}
