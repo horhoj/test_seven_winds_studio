@@ -15,6 +15,11 @@
   min-height: 36px;
   padding: 10px;
   border-radius: 6px;
+  
+
+  &:focus {
+    outline: 2px solid #414144;
+  }
 
   &::selection {
     background: cadetblue;
@@ -22,6 +27,16 @@
 
   &::-moz-selection {
     background: cadetblue;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+    max-width: 165px;
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
 }
 

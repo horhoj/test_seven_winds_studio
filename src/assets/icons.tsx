@@ -92,3 +92,38 @@ export function HeaderBottomArrowDownIcon() {
     </svg>
   );
 }
+
+export function CancelIcon() {
+  return (
+    <svg
+      version="1.1"
+      id="Layer_1"
+      xmlns="http://www.w3.org/2000/svg"
+      x="0px"
+      y="0px"
+      viewBox="0 0 426.667 426.667"
+      // style="enable-background:new 0 0 426.667 426.667;"
+      xmlSpace="preserve"
+      width="16px"
+      height="16px"
+    >
+      <g>
+        <path
+          fill="#C93636"
+          d="M213.333,0C95.509,0,0,95.514,0,213.333s95.509,213.333,213.333,213.333
+		c117.815,0,213.333-95.514,213.333-213.333S331.149,0,213.333,0z M213.333,372.527c-87.778,0-159.194-71.411-159.194-159.194
+		S125.555,54.14,213.333,54.14s159.194,71.415,159.194,159.194S301.111,372.527,213.333,372.527z"
+        />
+
+        <rect
+          x="17.066"
+          y="186.258"
+          transform="matrix(-0.7071 -0.7071 0.7071 -0.7071 213.3327 515.0204)"
+          fill="#C93636"
+          width="392.53"
+          height="54.139"
+        />
+      </g>
+    </svg>
+  );
+}

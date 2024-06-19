@@ -1,4 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import { makeLinkToHerAddress, makeRowTreeNodeViewList } from './helpers';
 import { getApiErrors } from '~/api/common';
 import { outlayRowsAPI } from '~/api/outlayRows';
@@ -38,6 +39,7 @@ const { actions, reducer } = createSlice({
   initialState,
   reducers: {
     clear: () => initialState,
+
     delete: (state, action: PayloadAction<number[]>) => {
       if (state.fetchRowListRequest.data !== null) {
         const { elIdx, link } = makeLinkToHerAddress(state.fetchRowListRequest.data, action.payload);
@@ -46,6 +48,7 @@ const { actions, reducer } = createSlice({
         }
       }
     },
+
     update: (state, action: PayloadAction<{ links: number[]; current: RowPatchResponseCurrent }>) => {
       if (state.fetchRowListRequest.data !== null) {
         const { elIdx, link } = makeLinkToHerAddress(state.fetchRowListRequest.data, action.payload.links);
@@ -54,6 +57,7 @@ const { actions, reducer } = createSlice({
         }
       }
     },
+
     setEditRowId: (state, action: PayloadAction<number | null>) => {
       state.editRowId = action.payload;
     },
@@ -84,10 +88,12 @@ const { actions, reducer } = createSlice({
 const fetchRowListThunk = createAsyncThunk(`${SLICE_NAME}/fetchRowListThunk`, async (_, store) => {
   try {
     const data = await outlayRowsAPI.fetchRowList();
-
+    toast.success('Дерево сущностей загружено успешно');
     return data;
   } catch (e: unknown) {
-    return store.rejectWithValue(getApiErrors(e));
+    const error = getApiErrors(e);
+    toast.error(`Ошибка загрузки дерева сущностей: ${error.errorMessage}`);
+    return store.rejectWithValue(error);
   }
 });
 
@@ -102,9 +108,12 @@ const deleteRowListThunk = createAsyncThunk(
     try {
       const data = await outlayRowsAPI.deleteRowList(rID);
       store.dispatch(actions.delete(links));
+      toast.success('Удалено успешно');
       return data;
     } catch (e: unknown) {
-      return store.rejectWithValue(getApiErrors(e));
+      const error = getApiErrors(e);
+      toast.error(`Ошибка удаления: ${error.errorMessage}`);
+      return store.rejectWithValue(error);
     }
   },
 );
@@ -122,9 +131,12 @@ const patchRowListThunk = createAsyncThunk(
       const data = await outlayRowsAPI.patchRowList(rID, body);
       store.dispatch(actions.update({ links, current: data.current }));
       store.dispatch(actions.setEditRowId(null));
+      toast.success('Обновлено успешно');
       return data;
     } catch (e: unknown) {
-      return store.rejectWithValue(getApiErrors(e));
+      const error = getApiErrors(e);
+      toast.error(`Ошибка обновления: ${error.errorMessage}`);
+      return store.rejectWithValue(error);
     }
   },
 );
@@ -141,9 +153,12 @@ const createRowListThunk = createAsyncThunk(
       const data = await outlayRowsAPI.createRow(body);
       store.dispatch(actions.add({ current: data.current, links }));
       store.dispatch(actions.setAddRowParentId(false));
+      toast.success('Создано успешно');
       return data;
     } catch (e: unknown) {
-      return store.rejectWithValue(getApiErrors(e));
+      const error = getApiErrors(e);
+      toast.error(`Ошибка создания: ${error.errorMessage}`);
+      return store.rejectWithValue(error);
     }
   },
 );
@@ -160,3 +175,9 @@ export const treeNodeViewListSelector = createSelector(
   (state: RootState) => state.outlayRows.addRowParentId,
   (rowList, addRowParentId) => (rowList === null ? null : makeRowTreeNodeViewList(rowList, addRowParentId)),
 );
+
+export const requestInProgress = (state: RootState) =>
+  state.outlayRows.createRowListRequest.isLoading ||
+  state.outlayRows.fetchRowListRequest.isLoading ||
+  state.outlayRows.patchRowListRequest.isLoading ||
+  state.outlayRows.deleteRowListRequest.isLoading;

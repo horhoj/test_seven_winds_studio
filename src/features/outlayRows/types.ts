@@ -1,7 +1,5 @@
 import { RowTreeNode } from '~/api/outlayRows.types';
 
-// export type ListPosition = '+' | '-' | '|' | '>' | '#';
-
 export enum ListPosition {
   START = '+',
   END = '-',

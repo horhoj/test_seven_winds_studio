@@ -65,26 +65,37 @@
 
 .iconsWrapper {
   display: flex;
-
-  background-color: #414144;
   padding: 5px;
   border-radius: 6px;
-  gap: 8px;
+  justify-content: space-between;
+  min-width: 65px;
 
   &>button {
-    background-color: rgba(0, 0, 0, 0);
+    background-color: #414144;
     border: none;
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
   }
+
+  &>button:nth-child(2) {
+    display: none;
+  }
+
+  &:hover {
+    background-color: #414144;
+
+    &>button {
+        display: flex;
+      }
+  }
 }
 
 .edit {
-  background-color: red;
 }
 
 .levelHeaderWrapper {

@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
-import { outlayRowsSlice, treeNodeViewListSelector } from '../outlayRowsSlice';
+import { outlayRowsSlice, requestInProgress, treeNodeViewListSelector } from '../outlayRowsSlice';
 import { OutlayList } from '../OutlayList';
 import { RowTreeNodeView } from '../types';
+import { OutlayListToastifyWidget } from '../OutlayListToastifyWidget';
 import styles from './OutlayRowsWidget.module.scss';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
+import { Spinner } from '~/ui/Spinner';
 
 export function OutlayRowsWidget() {
   const dispatch = useAppDispatch();
   const treeNodeViewList = useAppSelector(treeNodeViewListSelector);
   const editId = useAppSelector((state) => state.outlayRows.editRowId);
   const addRowParentId = useAppSelector((state) => state.outlayRows.addRowParentId);
+  const isLoading = useAppSelector(requestInProgress);
 
   useEffect(() => {
     dispatch(outlayRowsSlice.thunks.fetchRowListThunk());
@@ -49,26 +52,32 @@ export function OutlayRowsWidget() {
     }
   };
 
-  const handleAddCancel = () => {
+  const handleCancel = () => {
     dispatch(outlayRowsSlice.actions.setEditRowId(null));
     dispatch(outlayRowsSlice.actions.setAddRowParentId(false));
   };
 
   return (
-    <div className={styles.OutlayRowsWidget}>
-      {treeNodeViewList && (
-        <OutlayList
-          deep={treeNodeViewList.deep}
-          rowTreeNodeViewList={treeNodeViewList.result}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-          editId={editId}
-          onPatch={handlePatch}
-          onAdd={handleAdd}
-          onCreate={handleCreate}
-          onAddCancel={handleAddCancel}
-        />
-      )}
-    </div>
+    <>
+      <Spinner isShow={isLoading} />
+      <div className={styles.OutlayRowsWidget}>
+        {treeNodeViewList && (
+          <OutlayList
+            deep={treeNodeViewList.deep}
+            rowTreeNodeViewList={treeNodeViewList.result}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            editId={editId}
+            onPatch={handlePatch}
+            onAdd={handleAdd}
+            onCreate={handleCreate}
+            onAddCancel={handleCancel}
+            disabled={isLoading}
+            onEditCancel={handleCancel}
+          />
+        )}
+      </div>
+      <OutlayListToastifyWidget />
+    </>
   );
 }

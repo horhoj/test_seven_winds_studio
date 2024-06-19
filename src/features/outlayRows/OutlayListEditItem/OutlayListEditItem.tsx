@@ -24,28 +24,34 @@ const VALIDATION_IS_NOT_INTEGER = 'не целое число';
 const VALIDATION_VERY_BIG_NUMBER = 'слишком большое число';
 const VALIDATION_MAX_NUMBER = 999999999999999;
 
+const integerValidator = (n: number | undefined): boolean =>
+  typeof n === 'number' && new RegExp('^[0-9]+$').test(n.toString());
+
 const validationSchema: yup.ObjectSchema<InitialValues> = yup.object({
   rowName: yup.string().typeError(VALIDATION_IS_NOT_STRING).required(VALIDATION_IS_EMPTY_MSG),
   salary: yup
     .number()
     .typeError(VALIDATION_IS_NOT_NUMBER)
     .max(VALIDATION_MAX_NUMBER, VALIDATION_VERY_BIG_NUMBER)
-    .test('isInteger', VALIDATION_IS_NOT_INTEGER, (value) => Number.isInteger(value))
+    .test('isInteger', VALIDATION_IS_NOT_INTEGER, integerValidator)
     .required(VALIDATION_IS_EMPTY_MSG),
   equipmentCosts: yup
     .number()
     .typeError(VALIDATION_IS_NOT_NUMBER)
-    .test('isInteger', VALIDATION_IS_NOT_INTEGER, (value) => Number.isInteger(value))
+    .max(VALIDATION_MAX_NUMBER, VALIDATION_VERY_BIG_NUMBER)
+    .test('isInteger', VALIDATION_IS_NOT_INTEGER, integerValidator)
     .required(VALIDATION_IS_EMPTY_MSG),
   overheads: yup
     .number()
     .typeError(VALIDATION_IS_NOT_NUMBER)
-    .test('isInteger', VALIDATION_IS_NOT_INTEGER, (value) => Number.isInteger(value))
+    .max(VALIDATION_MAX_NUMBER, VALIDATION_VERY_BIG_NUMBER)
+    .test('isInteger', VALIDATION_IS_NOT_INTEGER, integerValidator)
     .required(VALIDATION_IS_EMPTY_MSG),
   estimatedProfit: yup
     .number()
     .typeError(VALIDATION_IS_NOT_NUMBER)
-    .test('isInteger', VALIDATION_IS_NOT_INTEGER, (value) => Number.isInteger(value))
+    .max(VALIDATION_MAX_NUMBER, VALIDATION_VERY_BIG_NUMBER)
+    .test('isInteger', VALIDATION_IS_NOT_INTEGER, integerValidator)
     .required(VALIDATION_IS_EMPTY_MSG),
 });
 
@@ -57,13 +63,24 @@ export function OutlayListEditItem({ row, onSubmit }: OutlayListEditItemProps) {
       rowName: row.body.rowName,
       salary: row.body.salary,
       equipmentCosts: row.body.equipmentCosts,
-      estimatedProfit: row.body.equipmentCosts,
+      estimatedProfit: row.body.estimatedProfit,
       overheads: row.body.overheads,
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
-      const result: RowTreeNodeView = { ...row, body: { ...row.body, ...values } };
+      const parse = (value: number) => Number.parseInt(value.toString());
+      const result: RowTreeNodeView = {
+        ...row,
+        body: {
+          ...row.body,
+          rowName: values.rowName,
+          salary: parse(values.salary),
+          equipmentCosts: parse(values.equipmentCosts),
+          overheads: parse(values.overheads),
+          estimatedProfit: parse(values.estimatedProfit),
+        },
+      };
       onSubmit(result);
     },
   });
@@ -99,28 +116,28 @@ export function OutlayListEditItem({ row, onSubmit }: OutlayListEditItemProps) {
 
       <td>
         <span className={styles.field}>
-          <input type="text" {...salaryFieldData.fieldProps} form={FORM_ID} className={styles.input} />
+          <input type="number" {...salaryFieldData.fieldProps} form={FORM_ID} className={styles.input} />
           {salaryFieldData.isError && <span className={styles.error}>{salaryFieldData.errorText}</span>}
         </span>
       </td>
 
       <td>
         <span className={styles.field}>
-          <input type="text" {...equipmentCostsFieldData.fieldProps} form={FORM_ID} className={styles.input} />
+          <input type="number" {...equipmentCostsFieldData.fieldProps} form={FORM_ID} className={styles.input} />
           {equipmentCostsFieldData.isError && <span className={styles.error}>{equipmentCostsFieldData.errorText}</span>}
         </span>
       </td>
 
       <td>
         <span className={styles.field}>
-          <input type="text" {...overheadsFieldData.fieldProps} form={FORM_ID} className={styles.input} />
+          <input type="number" {...overheadsFieldData.fieldProps} form={FORM_ID} className={styles.input} />
           {overheadsFieldData.isError && <span className={styles.error}>{overheadsFieldData.errorText}</span>}
         </span>
       </td>
 
       <td>
         <span className={styles.field}>
-          <input type="text" {...estimatedProfitFieldData.fieldProps} form={FORM_ID} className={styles.input} />
+          <input type="number" {...estimatedProfitFieldData.fieldProps} form={FORM_ID} className={styles.input} />
           {estimatedProfitFieldData.isError && (
             <span className={styles.error}>{estimatedProfitFieldData.errorText}</span>
           )}

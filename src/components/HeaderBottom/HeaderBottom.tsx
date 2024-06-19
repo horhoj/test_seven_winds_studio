@@ -13,6 +13,7 @@ export function HeaderBottom() {
           <HeaderBottomArrowDownIcon />
         </button>
       </div>
+      <div className={styles.right}>Строительно-монтажные работы</div>
     </div>
   );
 }

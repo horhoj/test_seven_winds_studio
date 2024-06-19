@@ -8,7 +8,7 @@
   width: 240px;
   border-right: 1px solid #414144;
   display: flex;
-  padding: 0 10px 0 20px;
+  padding: 5px 10px 5px 20px;
   align-items: center;
   justify-content: space-between;
 }
@@ -32,4 +32,13 @@
   &:hover {
     background-color: #333;
   }
+}
+
+.right {
+  font-size: 18px;
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid #414144;
+
 }

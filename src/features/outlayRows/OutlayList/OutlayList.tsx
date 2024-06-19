@@ -4,7 +4,7 @@ import { RowTreeNodeView } from '../types';
 import { OutlayListViewItem } from '../OutlayListViewItem';
 import { OutlayListEditItem } from '../OutlayListEditItem';
 import styles from './OutlayList.module.scss';
-import { ListItemIcon, TrashItemIcon } from '~/assets/icons';
+import { CancelIcon, ListItemIcon, TrashItemIcon } from '~/assets/icons';
 import { getUUID } from '~/utils/getUUID';
 
 interface OutlayListProps {
@@ -17,6 +17,8 @@ interface OutlayListProps {
   onAdd: (parent: RowTreeNodeView | null) => void;
   onCreate: (parent: RowTreeNodeView) => void;
   onAddCancel: () => void;
+  onEditCancel: () => void;
+  disabled: boolean;
 }
 export function OutlayList({
   rowTreeNodeViewList,
@@ -28,6 +30,8 @@ export function OutlayList({
   onAdd,
   onCreate,
   onAddCancel,
+  disabled,
+  onEditCancel,
 }: OutlayListProps) {
   return (
     <div className={styles.OutlayListWrapper}>
@@ -36,13 +40,13 @@ export function OutlayList({
           <tr>
             <th>
               <span className={styles.levelHeaderWrapper}>
-                <button onClick={() => onAdd(null)}>
+                <button onClick={() => onAdd(null)} disabled={disabled} title={'Создать корневой элемент'}>
                   <ListItemIcon />
                 </button>
                 <span>Уровень</span>
               </span>
             </th>
-            <th>Наименование</th>
+            <th>Наименование работ</th>
             <th>Основная з/п</th>
             <th>Оборудование</th>
             <th>Накладные расходы</th>
@@ -56,21 +60,40 @@ export function OutlayList({
             const key = row.isNew ? getUUID() : row.body.id;
 
             return (
-              <tr key={key} className={classNames(styles.tr)} onDoubleClick={() => onEdit(row)}>
+              <tr key={key} className={classNames(styles.tr)} onDoubleClick={() => !disabled && onEdit(row)}>
                 <td className={styles.levelTd}>
                   <ListConnection listPosition={row.listPosition} deep={deep}>
                     <div className={styles.iconsWrapper}>
-                      <button onClick={() => onAdd(row)} disabled={row.isNew}>
+                      <button
+                        onClick={() => onAdd(row)}
+                        disabled={row.isNew || disabled || isEdit}
+                        title={'Создать дочерний элемент'}
+                      >
                         <ListItemIcon />
                       </button>
-                      {!row.isNew && (
-                        <button onClick={() => onDelete(row)}>
+                      {!row.isNew && !isEdit && (
+                        <button
+                          onClick={() => onDelete(row)}
+                          disabled={row.isNew || disabled}
+                          title={'Удалить элемент'}
+                        >
                           <TrashItemIcon />
                         </button>
                       )}
+
+                      {!row.isNew && isEdit && (
+                        <button
+                          onClick={() => onEditCancel()}
+                          disabled={disabled}
+                          title={'отменить редактирование элемента'}
+                        >
+                          <CancelIcon />
+                        </button>
+                      )}
+
                       {row.isNew && (
-                        <button onClick={onAddCancel}>
-                          <TrashItemIcon />
+                        <button onClick={onAddCancel} disabled={disabled} title={'отменить создание элемента'}>
+                          <CancelIcon />
                         </button>
                       )}
                     </div>
