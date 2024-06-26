@@ -29,7 +29,7 @@ export interface RowPatchBody {
 
 export interface RowPatchResponse {
   current: RowPatchResponseCurrent;
-  changed: unknown[];
+  changed: Changed[];
 }
 
 export interface RowPatchResponseCurrent {
@@ -63,7 +63,7 @@ export interface CreatePatchBody {
 
 export interface RowCreateResponse {
   current: RowCreateResponseCurrent;
-  changed: unknown[];
+  changed: Changed[];
 }
 
 export interface RowCreateResponseCurrent {
@@ -79,4 +79,24 @@ export interface RowCreateResponseCurrent {
   equipmentCosts: number;
   overheads: number;
   estimatedProfit: number;
+}
+
+export interface Changed {
+  id: number;
+  rowName: string;
+  total: number;
+  salary: number;
+  mimExploitation: number;
+  machineOperatorSalary: number;
+  materials: number;
+  mainCosts: number;
+  supportCosts: number;
+  equipmentCosts: number;
+  overheads: number;
+  estimatedProfit: number;
+}
+
+export interface RowDeleteResponse {
+  current: null;
+  changed: Changed[];
 }

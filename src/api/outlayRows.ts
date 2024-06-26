@@ -1,5 +1,12 @@
 import { axiosInstance } from './apiTransport';
-import { CreatePatchBody, RowCreateResponse, RowPatchBody, RowPatchResponse, RowTreeNode } from './outlayRows.types';
+import {
+  CreatePatchBody,
+  RowCreateResponse,
+  RowDeleteResponse,
+  RowPatchBody,
+  RowPatchResponse,
+  RowTreeNode,
+} from './outlayRows.types';
 
 const fetchRowList = async () => {
   const res = await axiosInstance.request<RowTreeNode[]>({ url: '/row/list', method: 'get' });
@@ -8,7 +15,7 @@ const fetchRowList = async () => {
 };
 
 const deleteRowList = async (rID: number) => {
-  const res = await axiosInstance.request({
+  const res = await axiosInstance.request<RowDeleteResponse>({
     url: `/row/${rID}/delete`,
     method: 'delete',
   });

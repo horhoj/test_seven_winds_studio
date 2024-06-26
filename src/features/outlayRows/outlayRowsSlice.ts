@@ -1,9 +1,10 @@
-import { PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
+import { Action, PayloadAction, createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { makeLinkToHerAddress, makeRowTreeNodeViewList } from './helpers';
 import { getApiErrors } from '~/api/common';
 import { outlayRowsAPI } from '~/api/outlayRows';
 import {
+  Changed,
   CreatePatchBody,
   RowCreateResponseCurrent,
   RowPatchBody,
@@ -76,6 +77,39 @@ const { actions, reducer } = createSlice({
         }
       }
     },
+
+    updateGlobal: (state, action: PayloadAction<Changed[]>) => {
+      if (state.fetchRowListRequest.data === null) {
+        return;
+      }
+
+      const changeMap: Record<number, Changed> = {};
+      for (const el of action.payload) {
+        changeMap[el.id] = el;
+      }
+      const stack: RowTreeNode[] = [...state.fetchRowListRequest.data];
+
+      while (stack.length > 0) {
+        const el = stack.shift();
+        if (el) {
+          stack.unshift(...el.child);
+          const elNewData = changeMap[el.id];
+          if (elNewData) {
+            el.equipmentCosts = elNewData.equipmentCosts;
+            el.estimatedProfit = elNewData.estimatedProfit;
+            el.machineOperatorSalary = elNewData.machineOperatorSalary;
+            el.mainCosts = elNewData.mainCosts;
+            el.materials = elNewData.materials;
+            el.mimExploitation = elNewData.mimExploitation;
+            el.overheads = elNewData.overheads;
+            el.rowName = elNewData.rowName;
+            el.salary = elNewData.salary;
+            el.supportCosts = elNewData.supportCosts;
+            el.total = elNewData.total;
+          }
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     makeRequestExtraReducer<RequestList<IS>>(builder, fetchRowListThunk, 'fetchRowListRequest');
@@ -108,6 +142,7 @@ const deleteRowListThunk = createAsyncThunk(
     try {
       const data = await outlayRowsAPI.deleteRowList(rID);
       store.dispatch(actions.delete(links));
+      store.dispatch(actions.updateGlobal(data.changed));
       toast.success('Удалено успешно');
       return data;
     } catch (e: unknown) {
@@ -131,6 +166,7 @@ const patchRowListThunk = createAsyncThunk(
       const data = await outlayRowsAPI.patchRowList(rID, body);
       store.dispatch(actions.update({ links, current: data.current }));
       store.dispatch(actions.setEditRowId(null));
+      store.dispatch(actions.updateGlobal(data.changed));
       toast.success('Обновлено успешно');
       return data;
     } catch (e: unknown) {
@@ -152,6 +188,7 @@ const createRowListThunk = createAsyncThunk(
     try {
       const data = await outlayRowsAPI.createRow(body);
       store.dispatch(actions.add({ current: data.current, links }));
+      store.dispatch(actions.updateGlobal(data.changed));
       store.dispatch(actions.setAddRowParentId(false));
       toast.success('Создано успешно');
       return data;
